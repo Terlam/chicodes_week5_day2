@@ -1,4 +1,4 @@
-from marvel_phonebook_app import app,db
+from marvel_phonebook_app import app,db, login_manager
 
 # Import all of the Werkzeg security methods
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,23 +6,34 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Import for DateTime Module (This comes from python)
 from datetime import datetime
 
-# the User class will have
+# Import for the Login Manager UserMixin
+from flask_login import UserMixin
+
+# the user class will have
 # An id, username, email 
 # password, post
 
-class Users(db.Model):
+# Create the current user_manager using the user_loader function
+# Which is a decorator(used in this class to send info to the User Model)
+# Specifically the User's ID
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(db.Model):
     id = db.Column(db.String(150), primary_key = True)
-    heroname = db.Column(db.String(150), nullable = False, unique=True)
+    username = db.Column(db.String(150), nullable = False, unique=True)
     phone = db.Column(db.String(15), nullable = False, unique=True)
     email = db.Column(db.String(150), nullable = False, unique = True)
     password = db.Column(db.String(256), nullable = False)
     post = db.relationship('Post', backref = 'author', lazy = True)
 
-    def __init__(self,heroname,phone,email,password):
-        self.heroname = heroname
+    def __init__(self,username,phone,email,password):
+        self.username = username
         self.phone = phone
         self.email = email
-        self.password = password
+        self.password = self.set_password(password)
 
     def set_password(self,password):
 
@@ -30,7 +41,7 @@ class Users(db.Model):
         return self.pw_hash
 
     def __repr__(self):
-        return f'{self.heroname} has been created with the following email {self.email}'
+        return f'{self.username} has been created with the following email {self.email}'
 
 
 # Creation of the Post Model

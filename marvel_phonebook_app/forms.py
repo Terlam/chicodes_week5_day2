@@ -8,9 +8,14 @@ from wtforms.validators import DataRequired,EqualTo, Email
 # Email == making sure the field has a proper email given to it
 
 class AvengerInfoForm(FlaskForm):
-    heroname = StringField('Heroname', validators = [DataRequired()])
+    username = StringField('Username', validators = [DataRequired()])
     phone = StringField('Phone', validators = [DataRequired()])
     email = StringField('Email', validators = [DataRequired(), Email()])
     password = PasswordField('Password', validators = [DataRequired()])
     # confirm_pass = PasswordField('Confirm Password', validators = [DataRequired(), EqualTo('password')])
+    submit = SubmitField()
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators = [DataRequired(), Email()])
+    password = PasswordField('Password', validators = [DataRequired()])
     submit = SubmitField()
