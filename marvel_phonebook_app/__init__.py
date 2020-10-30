@@ -29,4 +29,4 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login' # Specify what page to load for NON-authenticated users
 
 
-from marvel_phonebook_app import routes
+from marvel_phonebook_app import routes,models
